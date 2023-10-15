@@ -62,6 +62,8 @@ namespace VhsDecodeAutoAudioAlign.Actions
                 GetNl(args, csv);
 
                 csv.WriteLine(
+                    Csv("video time [s]") + sep +
+                    Csv("capture time [s]") + sep +
                     Csv("field") + sep +
                     Csv("expected offset") + sep +
                     Csv("actual offset") + sep +
@@ -80,6 +82,9 @@ namespace VhsDecodeAutoAudioAlign.Actions
                     var actualOff = f.fileLoc;
                     var projectedOff = projection.ProjectOutputToInputOffset(outputOffset);
 
+                    var videoTimeSec = (double)outputOffset / (double)cfg.sampleRateHz;
+                    var captureTimeSec = (double)actualOff / (double)cfg.sampleRateHz;
+
                     var errorActual = (long)actualOff - (long)expectedOff;
                     var projectionErr = (long)projectedOff - (long)actualOff;
 
@@ -87,6 +92,8 @@ namespace VhsDecodeAutoAudioAlign.Actions
                     projectionErrMs /= (cfg.sampleRateHz / 1000);
 
                     csv.WriteLine(
+                        Csv(videoTimeSec, 5) + sep +
+                        Csv(captureTimeSec, 5) + sep +
                         Csv(i) + sep +
                         Csv(expectedOff) + sep +
                         Csv(actualOff) + sep +

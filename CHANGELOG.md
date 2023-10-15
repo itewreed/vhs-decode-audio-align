@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- CSVs have time offset columns that help binjr to better parse them
+
 ## [0.1.0] - 2023-10-15
 
 ### Added
