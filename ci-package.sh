@@ -20,6 +20,7 @@ add_file "$BIN_APP"
 add_file "Binah.dll"
 add_file "$FILE_BUILD_INFO_TXT"
 
+add_file "../CHANGELOG.md" "CHANGELOG.md"
 add_file "../LICENSE" "LICENSE-app.txt"
 add_file "../$DIR_NUPKG_RELATIVE/Binah"*"/content/license"* "LICENSE-Binah.txt"
 
