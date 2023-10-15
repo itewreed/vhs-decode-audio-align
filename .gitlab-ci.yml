@@ -9,6 +9,7 @@ all_of_it:
     - /bin/bash ci-install-packages.sh
     - /bin/bash ci-build.sh
     - /bin/bash ci-test.sh
+    - /bin/bash ci-package.sh
   artifacts:
     paths: 
      - ./*.zip

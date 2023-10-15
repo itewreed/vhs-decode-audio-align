@@ -48,6 +48,9 @@
     <Compile Include="Interpolation\ProjectionMisc.cs" />
     <Compile Include="Io\InputStreamCache.cs" />
     <Compile Include="Actions\StreamAlign.cs" />
+    <Compile Include="BuildInfo.cs" />
+    <Compile Include="Actions\ShowBuildInfo.cs" />
+    <Compile Include="About.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="TbcJson\" />

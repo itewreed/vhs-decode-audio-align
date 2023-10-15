@@ -11,7 +11,12 @@ namespace VhsDecodeAutoAudioAlign
             var log = new ConsoleLog(Console.Error);
             try
             {
-                var app = new Binah.ActionApp(Console.Error.WriteLine);
+                var app = new Binah.ActionApp(Console.Error.WriteLine) 
+                {
+                    AppName = About.LongName + " v" + BuildInfo.VersionSemantic,
+                    AppInfo = About.Info,
+                };
+                app.Add(new Actions.ShowBuildInfo(log));
                 app.Add(new Actions.GenerateDriftCsv(log));
                 app.Add(new Actions.StreamAlign(log));
                 app.Run(args);

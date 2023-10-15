@@ -7,6 +7,7 @@ SLN_APP=VhsDecodeAutoAudioAlign.sln
 BIN_APP=VhsDecodeAutoAudioAlign.exe
 BIN_APP_TEST=VhsDecodeAutoAudioAlign.Test.dll
 DIR_NUPKG_RELATIVE=packages
+FILE_BUILD_INFO_TXT=build-info.txt
 
 function die
 {
