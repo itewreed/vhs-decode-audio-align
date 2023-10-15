@@ -1,0 +1,18 @@
+image: mono:6
+
+stages:
+  - build_test_pack
+
+all_of_it:
+  stage: build_test_pack
+  script:
+    - /bin/bash ci-install-packages.sh
+    - /bin/bash ci-build.sh
+    - /bin/bash ci-test.sh
+  artifacts:
+    paths: 
+     - ./*.zip
+    reports:
+      junit:
+      - ./**/*-results.junit.xml
+
