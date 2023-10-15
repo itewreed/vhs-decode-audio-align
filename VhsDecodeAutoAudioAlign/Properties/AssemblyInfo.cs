@@ -4,20 +4,19 @@ using System.Runtime.CompilerServices;
 // Information about this assembly is defined by the following attributes. 
 // Change them to the values specific to your project.
 
-[assembly: AssemblyTitle("vhs-decode-auto-audio-align")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle(VhsDecodeAutoAudioAlign.About.LongName)]
+[assembly: AssemblyDescription(VhsDecodeAutoAudioAlign.About.Info)]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("")]
-[assembly: AssemblyCopyright("${AuthorCopyright}")]
+[assembly: AssemblyProduct(VhsDecodeAutoAudioAlign.About.LongName)]
+[assembly: AssemblyCopyright(VhsDecodeAutoAudioAlign.About.Copyright)]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
-// The assembly version has the format "{Major}.{Minor}.{Build}.{Revision}".
-// The form "{Major}.{Minor}.*" will automatically update the build and revision,
-// and "{Major}.{Minor}.{Build}.*" will update just the revision.
+[assembly: AssemblyVersion(BuildInfo.VersionMajor + "." + BuildInfo.VersionMinor + "." + BuildInfo.VersionPatch + ".0")]
+[assembly: AssemblyFileVersion(BuildInfo.VersionMajor + "." + BuildInfo.VersionMinor + "." + BuildInfo.VersionPatch + ".0")]
+[assembly: AssemblyInformationalVersion(BuildInfo.VersionSemantic)]
 
-[assembly: AssemblyVersion("1.0.*")]
 
 // The following attributes are used to specify the signing key for the assembly, 
 // if desired. See the Mono documentation for more information about signing.
