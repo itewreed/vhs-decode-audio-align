@@ -1,0 +1,17 @@
+**/*.swp
+**/*.kate-swp
+**/mono_crash*
+**/*.orig
+**/*.bin
+**/*.raw
+.vs
+**/bin
+**/obj
+**/*.exe
+**/*.dll
+**/*.obj
+**/*.pdb
+packages
+**/*.user
+build
+**/license*
