@@ -15,3 +15,5 @@ packages
 **/*.user
 build
 **/license*
+*.bkp
+*.dtmp

@@ -59,7 +59,6 @@
     <Folder Include="Io\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="license.binah.txt" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
