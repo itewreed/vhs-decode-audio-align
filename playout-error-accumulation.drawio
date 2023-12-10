@@ -1,0 +1,82 @@
+<mxfile host="Electron" modified="2023-12-10T09:57:49.589Z" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/22.1.2 Chrome/114.0.5735.289 Electron/25.9.4 Safari/537.36" etag="G8YvqoSBBoJvLNB41_bs" version="22.1.2" type="device">
+  <diagram name="Page-1" id="qVvWz9xdIZJrBQJWd_qi">
+    <mxGraphModel dx="989" dy="583" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="3300" pageHeight="2339" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="GVNtViIMBT-edqYJ1paz-1" value="Video field 0" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="240" y="280" width="110" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="GVNtViIMBT-edqYJ1paz-2" value="Time" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="240" y="520" as="sourcePoint" />
+            <mxPoint x="730" y="520" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="GVNtViIMBT-edqYJ1paz-3" value="Capture time video&lt;br&gt;(slightly faster)" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="80" y="280" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="GVNtViIMBT-edqYJ1paz-4" value="Playout time video" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="80" y="360" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="GVNtViIMBT-edqYJ1paz-5" value="Playout time audio&lt;br&gt;(40kSps)" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="80" y="440" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="GVNtViIMBT-edqYJ1paz-6" value="Video field 0" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="240" y="360" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="GVNtViIMBT-edqYJ1paz-7" value="Video field 1" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="360" y="360" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="GVNtViIMBT-edqYJ1paz-8" value="Video field 1" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="350" y="280" width="110" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="GVNtViIMBT-edqYJ1paz-9" value="Video field 2" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="460" y="280" width="110" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="GVNtViIMBT-edqYJ1paz-10" value="Video field 2" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="480" y="360" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="GVNtViIMBT-edqYJ1paz-11" value="Sample&lt;br&gt;0..799" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="240" y="440" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="GVNtViIMBT-edqYJ1paz-12" value="Sample&lt;br&gt;800..1599" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="360" y="440" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="GVNtViIMBT-edqYJ1paz-13" value="Sample&lt;br&gt;1600..2399" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="480" y="440" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="GVNtViIMBT-edqYJ1paz-14" value="Video field 3" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="570" y="280" width="110" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="GVNtViIMBT-edqYJ1paz-15" value="Video field 3" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="600" y="360" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="GVNtViIMBT-edqYJ1paz-16" value="Sample&lt;br&gt;2400..3199" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="600" y="440" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="GVNtViIMBT-edqYJ1paz-17" value="" style="shape=document;whiteSpace=wrap;html=1;boundedLbl=1;rotation=90;strokeColor=#808080;" vertex="1" parent="1">
+          <mxGeometry x="565.62" y="323.13" width="243.75" height="115" as="geometry" />
+        </mxCell>
+        <mxCell id="GVNtViIMBT-edqYJ1paz-18" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="640" y="250" width="110" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="GVNtViIMBT-edqYJ1paz-19" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="640" y="490" width="110" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="GVNtViIMBT-edqYJ1paz-20" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="730" y="260" width="20" height="230" as="geometry" />
+        </mxCell>
+        <mxCell id="GVNtViIMBT-edqYJ1paz-21" value="error" style="shape=curlyBracket;whiteSpace=wrap;html=1;rounded=1;flipH=1;labelPosition=right;verticalLabelPosition=middle;align=left;verticalAlign=middle;rotation=-90;" vertex="1" parent="1">
+          <mxGeometry x="460" y="250" width="20" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="GVNtViIMBT-edqYJ1paz-22" value="error" style="shape=curlyBracket;whiteSpace=wrap;html=1;rounded=1;flipH=1;labelPosition=right;verticalLabelPosition=middle;align=left;verticalAlign=middle;rotation=-90;" vertex="1" parent="1">
+          <mxGeometry x="575" y="245" width="20" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="GVNtViIMBT-edqYJ1paz-23" value="error" style="shape=curlyBracket;whiteSpace=wrap;html=1;rounded=1;flipH=1;labelPosition=right;verticalLabelPosition=middle;align=left;verticalAlign=middle;rotation=-90;" vertex="1" parent="1">
+          <mxGeometry x="345" y="255" width="20" height="10" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
