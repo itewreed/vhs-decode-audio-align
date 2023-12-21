@@ -75,6 +75,54 @@ namespace VhsDecodeAutoAudioAlign.Test.UnitTest.io
             }
         }
 
+        class MyStream : MemoryStream
+        {
+            public MyStream(byte[] buffer) : base(buffer)
+            {
+            }
+
+            public override bool CanSeek => false;
+
+            public int callsSeek = 0;
+            public override long Seek(long offset, SeekOrigin loc)
+            {
+                ++callsSeek;
+                throw new NotSupportedException();
+            }
+
+            public int callsPositionSet = 0;
+            public int callsPositionGet = 0;
+            public override long Position 
+            {
+                get 
+                {
+                    ++callsPositionGet;
+                    throw new NotSupportedException(); 
+                }
+                set
+                {
+                    ++callsPositionSet;
+                    throw new NotSupportedException();
+                }
+            }
+        }
+
+        [Test]
+        public void EofNonSeek([Values(7)] int samples)
+        {
+            var stream = new MyStream(new byte[samples]);
+            var cut = new InputStreamCache(log, stream, DefaultCfg);
+
+            for (int i = 0; i < samples; ++i)
+                Assert.DoesNotThrow(()=>cut.GetSample((ulong)i));
+
+            var eof = cut.GetSample((ulong)(samples + 5));
+            Assert.Null(eof);
+            Assert.That(stream.callsSeek, Is.EqualTo(0));
+            Assert.That(stream.callsPositionGet, Is.EqualTo(0));
+            Assert.That(stream.callsPositionSet, Is.EqualTo(0));
+        }
+
 
         [Test]
         public void GetSampleOutOfCache()

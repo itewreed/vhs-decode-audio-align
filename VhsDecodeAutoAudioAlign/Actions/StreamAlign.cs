@@ -140,7 +140,8 @@ namespace VhsDecodeAutoAudioAlign.Actions
                 }
                 while (sample != null);
 
-                log.That("End of stream processing, " + output.Position + " total output bytes (" + outputOffset + "samples), total " + input.Position + " input bytes");
+
+                log.That("End of stream processing, " + output.PositionStringSafe() + " total output bytes (" + outputOffset + "samples), total " + input.PositionStringSafe() + " input bytes");
             }
         }
     }
