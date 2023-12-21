@@ -58,20 +58,21 @@ namespace VhsDecodeAutoAudioAlign.Actions
 
         protected TbcJsonDocument ReadTbcJson(ActionWithTbcArgs args)
         {
+            var fixup = new TbcJsonFixup(log);
             var reader = new TbcJsonReader(log);
 
             log.That("Will read '" + args.json.FullName + "' now ...");
             var start = DateTime.Now;
             var tbc = reader.ReadTbcJson(args.json);
+            tbc = fixup.Fixup32BitOverflow(tbc);
             var time = DateTime.Now - start;
-
             log.That("... done, took " + time.TotalMilliseconds + " ms, and loaded " + tbc.fields.Length + " fields");
             return tbc;
         }
 
         protected ulong[] GetFieldLocations(TbcJsonDocument json)
         {
-            return json.fields.Select(f => f.fileLoc).ToArray();
+            return json.fields.Select(f => (ulong)f.fileLoc).ToArray();
         }
     }
 }

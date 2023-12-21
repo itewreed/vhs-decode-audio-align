@@ -51,6 +51,7 @@
     <Compile Include="BuildInfo.cs" />
     <Compile Include="Actions\ShowBuildInfo.cs" />
     <Compile Include="About.cs" />
+    <Compile Include="TbcJson\TbcJsonFixup.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="TbcJson\" />
