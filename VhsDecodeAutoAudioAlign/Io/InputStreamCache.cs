@@ -41,10 +41,14 @@ namespace VhsDecodeAutoAudioAlign.Io
             public byte[] data;
         }
 
+        bool eof = false;
         readonly List<CachedBlock> cache = new List<CachedBlock>();
 
         byte[] ReadNextBlock()
         {
+            if (eof)
+                return null;
+
             try
             {
                 var block = new byte[config.blockSizeInSamples * config.sampleSizeInBytes];
@@ -55,8 +59,9 @@ namespace VhsDecodeAutoAudioAlign.Io
                     var read = input.Read(block, off, block.Length - off);
                     if (read == 0) // EOF
                     {
+                        eof = true;
                         var lastBlock = block.Take(off).ToArray();
-                        log.That("End of input stream (" + input.Position + "/" + lastBlock.Length + ")");
+                        log.That("End of input stream (" + input.PositionStringSafe() + "/" + lastBlock.Length + ")");
                         return lastBlock;
                     }
 

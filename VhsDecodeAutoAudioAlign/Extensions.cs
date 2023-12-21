@@ -14,5 +14,10 @@ namespace VhsDecodeAutoAudioAlign
         {
             return new DirectoryInfo(Path.Combine(me.FullName, name));
         }
+
+        public static string PositionStringSafe(this Stream me)
+        {
+            return me.CanSeek ? me.Position.ToString() : "?";
+        }
     }
 }
