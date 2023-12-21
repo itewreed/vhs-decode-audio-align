@@ -72,7 +72,7 @@ namespace VhsDecodeAutoAudioAlign.Actions
                     Csv("projection error [samples]") + sep +
                     Csv("projection error [ms]"));
 
-                var field0 = json.fields[0].fileLoc;
+                var field0 = (ulong)json.fields[0].fileLoc;
                 for (int i = 0; i < json.fields.Length; ++i)
                 {
                     var f = json.fields[i];

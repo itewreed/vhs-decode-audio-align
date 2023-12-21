@@ -24,8 +24,12 @@ namespace VhsDecodeAutoAudioAlign.TbcJson
             public bool isFirstField;
             [DataMember]
             public uint seqNo;
+
+            // NOTE: this should be unsigned, however to workaround a bug in ld-decode-tools
+            //  which will cause a 32Bit signed rollover to negative values, this must be signed.
+            //  See https://gitlab.com/wolfre/vhs-decode-auto-audio-align/-/issues/13
             [DataMember]
-            public ulong fileLoc;
+            public long fileLoc; 
         }
 
         [DataMember]

@@ -9,9 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Fix links in CHANGELOG.md
+- Implement a workaround for signed 32Bit overflow in tbc.json produced by `ld-analyze` or other ld-decode-tools
+- Proper documentation
 - Package CHANGELOG.md into zip
 - CSVs have time offset columns that help binjr to better parse them
+
+### Fixed
+
+- Fix links in CHANGELOG.md
 
 ## [0.1.0] - 2023-10-15
 

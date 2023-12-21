@@ -45,6 +45,7 @@
     <Compile Include="UnitTest\FractionalUnsignedNumberTest.cs" />
     <Compile Include="UnitTest\interpolation\ProjectionMiscTest.cs" />
     <Compile Include="UnitTest\io\InputStreamCacheTest.cs" />
+    <Compile Include="UnitTest\tbcJson\TbcJsonFixupTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="UnitTest\" />
