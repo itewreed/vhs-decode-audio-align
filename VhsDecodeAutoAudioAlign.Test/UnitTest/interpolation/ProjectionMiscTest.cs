@@ -6,12 +6,21 @@ namespace VhsDecodeAutoAudioAlign.Test.UnitTest.interpolation
 {
     class ProjectionMiscTest
     {
+        const ulong FieldLength = 1000;
+
+        static SignalConfig SomeConfig => new SignalConfig() 
+        {
+            sampleRateHz = (uint)(FieldLength * 50L),
+            fieldRate = new FractionalUnsignedNumber()
+            {
+                nominator = 50,
+                denominator = 1, 
+            }
+        };
 
         [Test]
         public void ExtractGapLessSectionMissingField()
         {
-            const ulong FieldLength = 1000;
-
             var fieldOffsets = new ulong[]
             {
                 FieldLength * 0,
@@ -22,7 +31,7 @@ namespace VhsDecodeAutoAudioAlign.Test.UnitTest.interpolation
                 FieldLength * 5,
             };
 
-            var sections = ProjectionMisc.ExtractGapLessSection(fieldOffsets);
+            var sections = ProjectionMisc.ExtractGapLessSection(fieldOffsets, SomeConfig);
 
             Assert.That(sections.Length, Is.EqualTo(2));
 
@@ -39,8 +48,6 @@ namespace VhsDecodeAutoAudioAlign.Test.UnitTest.interpolation
         [Test]
         public void ExtractGapLessSectionMissingFieldSingle()
         {
-            const ulong FieldLength = 1000;
-
             var fieldOffsets = new ulong[]
             {
                 FieldLength * 0,
@@ -54,13 +61,76 @@ namespace VhsDecodeAutoAudioAlign.Test.UnitTest.interpolation
                 FieldLength * 8,
             };
 
-            var sections = ProjectionMisc.ExtractGapLessSection(fieldOffsets);
+            var sections = ProjectionMisc.ExtractGapLessSection(fieldOffsets, SomeConfig);
 
             Assert.That(sections.Length, Is.EqualTo(4));
             Assert.That(sections[0].fieldOffsets.Length, Is.EqualTo(2));
             Assert.That(sections[1].fieldOffsets.Length, Is.EqualTo(1));
             Assert.That(sections[2].fieldOffsets.Length, Is.EqualTo(1));
             Assert.That(sections[3].fieldOffsets.Length, Is.EqualTo(2));
+        }
+
+        [Test]
+        public void ExtractGapLessSectionStrayStartField()
+        {
+            var fieldOffsets = new ulong[]
+            {
+                FieldLength * 0,
+                FieldLength * 10,
+                FieldLength * 11,
+                FieldLength * 12,
+                FieldLength * 13,
+            };
+
+            var sections = ProjectionMisc.ExtractGapLessSection(fieldOffsets, SomeConfig);
+
+            Assert.That(sections.Length, Is.EqualTo(2));
+        }
+
+        [Test]
+        public void ExtractGapLessSectionStartLongGap()
+        {
+            var fieldOffsets = new ulong[]
+            {
+                FieldLength * 10,
+                FieldLength * 11,
+                FieldLength * 12,
+                FieldLength * 13,
+                // lots of nothing, then a new recording starts
+                FieldLength * 50,
+                FieldLength * 51,
+                FieldLength * 52,
+                FieldLength * 53,
+            };
+
+            var sections = ProjectionMisc.ExtractGapLessSection(fieldOffsets, SomeConfig);
+
+            Assert.That(sections.Length, Is.EqualTo(2));
+            Assert.That(sections[0].fieldOffsets[0], Is.EqualTo(FieldLength * 10));
+            Assert.That(sections[1].fieldOffsets[0], Is.EqualTo(FieldLength * 50));
+        }
+
+        [Test]
+        public void ExtractGapLessSectionStartShortGap()
+        {
+            var fieldOffsets = new ulong[]
+            {
+                FieldLength * 10,
+                FieldLength * 11,
+                FieldLength * 12,
+                FieldLength * 13,
+                // a second recording starts right in the middle of a field
+                FieldLength * 14 - (FieldLength/2),
+                FieldLength * 15 - (FieldLength/2),
+                FieldLength * 16 - (FieldLength/2),
+                FieldLength * 17 - (FieldLength/2),
+            };
+
+            var sections = ProjectionMisc.ExtractGapLessSection(fieldOffsets, SomeConfig);
+
+            Assert.That(sections.Length, Is.EqualTo(2));
+            Assert.That(sections[0].fieldOffsets[0], Is.EqualTo(FieldLength * 10));
+            Assert.That(sections[1].fieldOffsets[0], Is.EqualTo(FieldLength * 14 - (FieldLength / 2)));
         }
 
         const uint IdealSampleRate = 1000u;
@@ -135,7 +205,7 @@ namespace VhsDecodeAutoAudioAlign.Test.UnitTest.interpolation
 
             Assert.That(projected.Length, Is.EqualTo(2));
 
-            Assert.That(projected[1].outputSpeed.ToString(), Is.EqualTo(projected[0].outputSpeed.ToString()), "speed was not extrapolated correctly");
+            Assert.That(projected[1].outputSpeed.ToString(), Is.EqualTo((new FractionalUnsignedNumber(1,1)) .ToString()), "speed was not set to 1.0");
             Assert.That(projected[1].outputStart, Is.EqualTo(2 * 100));
             Assert.That(projected[1].inputStart, Is.EqualTo(ActualStart + actualOffsets.FieldOffset(3)));
         }

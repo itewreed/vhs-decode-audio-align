@@ -25,16 +25,13 @@ namespace VhsDecodeAutoAudioAlign.Interpolation
             ProjectionMisc.LimitPrecision21Bit(sourceToProjectedSampleRate);
             log.That("Reference to output sample rate scaling: " + sourceToProjectedSampleRate);
 
-            var gapLessesSections = ProjectionMisc.ExtractGapLessSection(referenceVideoFieldPositions);
+            var gapLessesSections = ProjectionMisc.ExtractGapLessSection(referenceVideoFieldPositions, referenceVideoStream);
             var gapLessesSectionsProjection = ProjectionMisc.CalcLinearMappingParameters(gapLessesSections, referenceVideoStream);
             ProjectionMisc.LimitPrecision21Bit(gapLessesSectionsProjection);
             gapLessesSectionsProjectionScaled = ToScaled(gapLessesSectionsProjection, sourceToProjectedSampleRate);
 
-
             foreach (var s in gapLessesSectionsProjectionScaled)
-            {
                 log.That("Section @" + s.fieldOffsets[0] + " -> " + s.outputStart + " with " + s.fieldOffsets.Length + " fields, " + s.outputSpeed + " factor=" + s.outputSpeed.ToDouble());
-            }
         }
 
         class GapLessSectionLinearProjectionScaled : GapLessSectionLinearProjection
