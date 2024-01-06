@@ -6,12 +6,13 @@ namespace VhsDecodeAutoAudioAlign.Interpolation
 {
     static class ProjectionMisc
     {
-        public static GapLessSection[] ExtractGapLessSection(ulong[] referenceVideoFieldPositions)
+        public static GapLessSection[] ExtractGapLessSection(ulong[] referenceVideoFieldPositions, SignalConfig captureConfig)
         {
             var sections = new List<GapLessSection>();
 
             var curent = new List<ulong>();
-            var avgFieldLen = 0UL;
+            var avgFieldLen = FractionalUnsignedNumberExtensions.Divide(captureConfig.sampleRateHz, captureConfig.fieldRate);
+            var tolFieldLen = avgFieldLen / 3;
 
             foreach (var fieldOff in referenceVideoFieldPositions)
             {
@@ -22,18 +23,10 @@ namespace VhsDecodeAutoAudioAlign.Interpolation
                 else
                 {
                     var currentFieldLength = fieldOff - curent[curent.Count - 1];
-                    if (avgFieldLen == 0)
-                        avgFieldLen = currentFieldLength;
-
-                    var tol = avgFieldLen / 2;
-                    if (currentFieldLength > (avgFieldLen - tol) && currentFieldLength < (avgFieldLen + tol))
+                    if (currentFieldLength > (avgFieldLen - tolFieldLen) && currentFieldLength < (avgFieldLen + tolFieldLen))
                     {
                         // in tolerance
                         curent.Add(fieldOff);
-                        // cheap and fast low pass filter to get an average for field length
-                        avgFieldLen *= 3;
-                        avgFieldLen += currentFieldLength;
-                        avgFieldLen /= 4;
                     }
                     else
                     {
@@ -41,9 +34,6 @@ namespace VhsDecodeAutoAudioAlign.Interpolation
                         sections.Add(new GapLessSection() { fieldOffsets = curent.ToArray() });
                         curent.Clear();
                         curent.Add(fieldOff);
-                        // NOTE we are not resetting the avergage field length. This enables us to detect single stray fields propperly
-                        //   However it also prevents us from switching ntsc->pal as here the longer fields would get interpreted as
-                        //   all-strays ...
                     }
                 }
             }
@@ -253,42 +243,32 @@ namespace VhsDecodeAutoAudioAlign.Interpolation
             var r = new List<GapLessSectionLinearProjection>();
             ulong nextOutputStart = 0;
 
-            foreach (var ss in sections)
+            foreach (var rawSec in sections)
             {
-                var s = new GapLessSectionLinearProjection() 
+                var projSec = new GapLessSectionLinearProjection() 
                 { 
-                    fieldOffsets = ss.fieldOffsets,
-                    inputStart = ss.fieldOffsets[0],
+                    fieldOffsets = rawSec.fieldOffsets,
+                    inputStart = rawSec.fieldOffsets[0],
                     outputStart = nextOutputStart
                 };
 
-                nextOutputStart += idealOffsetCalc.FieldOffset((uint)s.fieldOffsets.Length);
+                nextOutputStart += idealOffsetCalc.FieldOffset((uint)projSec.fieldOffsets.Length);
 
-                if (s.fieldOffsets.Length < 2)
+                if (projSec.fieldOffsets.Length < 2)
                 {
-                    // can't do linear projection ...
-                    if (r.Count > 0)
-                    {
-                        // ... will use the same speed as last section
-                        var last = r.Last().outputSpeed;
-                        s.outputSpeed = new FractionalUnsignedNumber(last.nominator, last.denominator);
-                    }
-                    else
-                    {
-                        // ... and we are the first section -> don't correct, factor of 1.0
-                        s.outputSpeed = new FractionalUnsignedNumber(1, 1);
-                    }
+                    // can't do linear projection, just use original speed
+                    projSec.outputSpeed = new FractionalUnsignedNumber(1, 1);
                 }
                 else
                 {
                     // A linear projection, from first to last field, projected onto the ideal length of the section
-                    s.outputSpeed = new FractionalUnsignedNumber()
+                    projSec.outputSpeed = new FractionalUnsignedNumber()
                     {
-                        nominator = s.fieldOffsets.Last() - s.fieldOffsets.First(),
-                        denominator = idealOffsetCalc.FieldOffset((uint)s.fieldOffsets.Length - 1)
+                        nominator = projSec.fieldOffsets.Last() - projSec.fieldOffsets.First(),
+                        denominator = idealOffsetCalc.FieldOffset((uint)projSec.fieldOffsets.Length - 1)
                     };
                 }
-                r.Add(s);
+                r.Add(projSec);
             }
 
             return r.ToArray();
