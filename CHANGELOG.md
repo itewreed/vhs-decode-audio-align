@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0] - 2024-04-26
+
 ### Added
 
 - Implement a workaround for signed 32Bit overflow in tbc.json produced by `ld-analyze` or other ld-decode-tools
@@ -27,5 +29,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Nearest neighbor interpolation of an input to an output stream 
 - CSV creation from TBC JSON to view drift and compensation over a tape
 
-[unreleased]: https://gitlab.com/wolfre/vhs-decode-auto-audio-align/-/compare/v0.1.0...main
+[unreleased]: https://gitlab.com/wolfre/vhs-decode-auto-audio-align/-/compare/v1.0.0...main
+[1.0.0]: https://gitlab.com/wolfre/vhs-decode-auto-audio-align/-/compare/v0.1.0...v1.0.0
 [0.1.0]: https://gitlab.com/wolfre/vhs-decode-auto-audio-align/-/tree/v0.1.0
