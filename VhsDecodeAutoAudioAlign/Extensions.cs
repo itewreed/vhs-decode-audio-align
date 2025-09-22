@@ -19,5 +19,10 @@ namespace VhsDecodeAutoAudioAlign
         {
             return me.CanSeek ? me.Position.ToString() : "?";
         }
+
+        public static string Hex(this byte[] data)
+        {
+            return BitConverter.ToString(data).Replace("-", "").ToLower();
+        }
     }
 }

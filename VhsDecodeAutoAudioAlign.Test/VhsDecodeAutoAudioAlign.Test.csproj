@@ -46,12 +46,16 @@
     <Compile Include="UnitTest\interpolation\ProjectionMiscTest.cs" />
     <Compile Include="UnitTest\io\InputStreamCacheTest.cs" />
     <Compile Include="UnitTest\tbcJson\TbcJsonFixupTest.cs" />
+    <Compile Include="IntegrationTest\actions\StreamAlignArgsTest.cs" />
+    <Compile Include="TempDir.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="UnitTest\" />
     <Folder Include="UnitTest\tbcJson\" />
     <Folder Include="UnitTest\interpolation\" />
     <Folder Include="UnitTest\io\" />
+    <Folder Include="IntegrationTest\" />
+    <Folder Include="IntegrationTest\actions\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
