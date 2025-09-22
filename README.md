@@ -4,6 +4,7 @@ A project to automatically align (RF) HiFi and linear audio captures to a video 
 For this to work all 3 streams need to be captured with a synchronous clock source, like [cxadc-clock-generator-audio-adc](https://gitlab.com/wolfre/cxadc-clock-generator-audio-adc)
 The app is written in C#/.NET, targeting Framework 4.7.2 and will work on Windows without additional requirements.
 On linux / mac the amazing [mono project](https://www.mono-project.com) can be used to run.
+The release [releases][releases] section also provides [Linux AppImage][appimage] builds that have the mono runtime included.
 
 ## Example for linear audio alignment
 
@@ -189,7 +190,7 @@ See [CHANGELOG.md](CHANGELOG.md).
 
 ## Releases
 
-See [releases](https://gitlab.com/wolfre/vhs-decode-auto-audio-align/-/releases) for a ready to use zip.
+See [releases][releases] for a ready to use zip and [Linux AppImage][appimage] builds.
 
 # License
 
@@ -202,3 +203,5 @@ The associated documentation (e.g. this markdown) is under *Creative Commons Att
 [vhs-decode]: https://github.com/oyvindln/vhs-decode
 [binjr]: https://github.com/binjr/binjr
 [sox-wiki]: https://en.wikipedia.org/wiki/SoX
+[releases]: https://gitlab.com/wolfre/vhs-decode-auto-audio-align/-/releases
+[appimage]: https://appimage.org/
