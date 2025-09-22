@@ -51,9 +51,9 @@ namespace VhsDecodeAutoAudioAlign.Actions
             if (args.inputFile == null)
                 return Console.OpenStandardInput();
 
-            args.outputFile.Refresh();
-            if (args.outputFile.Exists == false)
-                throw new FileNotFoundException(args.outputFile.FullName);
+            args.inputFile.Refresh();
+            if (args.inputFile.Exists == false)
+                throw new FileNotFoundException(args.inputFile.FullName);
 
             return args.inputFile.Open(FileMode.Open, FileAccess.Read, FileShare.Read);
         }
