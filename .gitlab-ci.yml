@@ -1,10 +1,12 @@
-image: mono:6
+
 
 stages:
-  - build_test_pack
+  - build_test_pack_app
+  - build_appimage
 
-all_of_it:
-  stage: build_test_pack
+app:
+  image: mono:6
+  stage: build_test_pack_app
   script:
     - /bin/bash ci-install-packages.sh
     - /bin/bash ci-build.sh
@@ -17,3 +19,14 @@ all_of_it:
       junit:
       - ./**/*-results.junit.xml
 
+appimage:
+  image: ubuntu:24.04
+  stage: build_appimage
+  dependencies:
+    - app
+  script:
+    - /bin/bash ci-build-appimage.sh
+  artifacts:
+    paths: 
+     - ./mono-build.log
+     - ./*.AppImage
