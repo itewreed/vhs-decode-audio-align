@@ -46,7 +46,9 @@ namespace VhsDecodeAutoAudioAlign.Actions
                 sampleRateHz = args.videoRfSampleRateHz 
             };
 
-            if (system.Contains("pal") && system.Contains("60") == false)
+            if(system.StartsWith("pal-m"))
+                cfg.fieldRate = Consts.FieldRateNtsc;
+            else if(system.Contains("pal") && system.Contains("60") == false)
                 cfg.fieldRate = Consts.FieldRatePal;
             else if (system.Contains("ntsc") && system.Contains("50") == false)
                 cfg.fieldRate = Consts.FieldRateNtsc;
