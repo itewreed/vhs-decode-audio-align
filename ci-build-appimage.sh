@@ -17,8 +17,18 @@ MONO_BUILD_LOG="$(pwd)/mono-build.log"
 
 function install_basics
 {
-    apt update
-    apt install -y curl xz-utils zip file fuse || die "apt install failed"
+    # We assume to be running in a debian / ubuntu container ...
+    echo "Installing basic packages"  
+    apt update &>> "$MONO_BUILD_LOG"
+    apt install -y curl ca-certificates xz-utils zip file fuse  &>> "$MONO_BUILD_LOG" || die "apt install failed"
+}
+
+function install_mono_build_deps
+{
+    # We assume to be running in a debian / ubuntu container ...
+    echo "Installing mono build dependencies"    
+    apt update &>> "$MONO_BUILD_LOG"
+    apt install -y build-essential tzdata python3 cmake  &>> "$MONO_BUILD_LOG" || die "apt install failed"
 }
 
 function build_mono
@@ -32,9 +42,7 @@ function build_mono
     mkdir -p /tmp
     cd /tmp || die "could not use tmp?!"
 
-
-    echo "Installing needed packages"
-    apt install -y ca-certificates build-essential tzdata python3 cmake  &>> "$MONO_BUILD_LOG" || die "apt install failed"
+    install_mono_build_deps
     
     echo "Getting source ..."
     curl --output mono-src.tar.xz https://download.mono-project.com/sources/mono/mono-${MONO_VERSION}.tar.xz &>> "$MONO_BUILD_LOG"
@@ -66,35 +74,65 @@ function build_mono
 
 function build_mono_cached
 {
-    # https://docs.gitlab.com/user/packages/generic_packages/?tab=CI%2FCD+job+token#download-a-single-file
-    local base_url="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic"
-    local pkg_url="$base_url/mono-bin/$MONO_VERSION/$MONO_ARCHIVE_NAME"
+    # This function will attempt to get a pre-built mono version from a cache, and if not available, build and cache it.
+    # Building mono takes quite some time (around 45 min on a gitlab.com shared runner in 2025), so caching helps a lot.
+    # The gitlab project package registry is used as cache, and the version and platform is included in the path/name,
+    # to support building for more than one CPU architecture.
 
+    function get_cache_url
+    {
+        local gitlab_project_id=$1
+        # https://docs.gitlab.com/user/packages/generic_packages/?tab=CI%2FCD+job+token#download-a-single-file
+        local base_url="${CI_API_V4_URL}/projects/${gitlab_project_id}/packages/generic"
+        local pkg_url="$base_url/mono-bin/$MONO_VERSION/$MONO_ARCHIVE_NAME"
+        echo -n "$pkg_url"
+    }
+
+    function pkg_looks_ok
+    {
+        test -f $MONO_ARCHIVE_NAME && test $(stat -c %s $MONO_ARCHIVE_NAME) -gt $(( 1024 * 1024 ))
+    }
+
+    # First we'll check for a cached pkg in our own registry ...
     curl \
         --location \
         --header "JOB-TOKEN: ${CI_JOB_TOKEN}" \
         --output $MONO_ARCHIVE_NAME \
-        "$pkg_url"
+        $(get_cache_url $CI_PROJECT_ID)
 
-    if [[ "$?" == "0" ]] && [[ -f $MONO_ARCHIVE_NAME ]] && [[ $(stat -c %s $MONO_ARCHIVE_NAME) -gt $(( 1024 * 1024 )) ]] ; then
-        echo "Got $MONO_ARCHIVE_NAME from cache" | tee -a "$MONO_BUILD_LOG"
+    if [[ "$?" == "0" ]] && pkg_looks_ok ; then
+        echo "Got $MONO_ARCHIVE_NAME from project cache" | tee -a "$MONO_BUILD_LOG"
         return 0
     fi
 
-    rm -f $MONO_ARCHIVE_NAME
-    echo "Will need to build mono $MONO_ARCHIVE_NAME ..." | tee -a "$MONO_BUILD_LOG"
+    rm -f "$MONO_ARCHIVE_NAME" # just in case something was downloaded
+
+    # If our own registry does not have the pre-build mono, we'll check the registry of the original project at 
+    # https://gitlab.com/wolfre/vhs-decode-auto-audio-align just in case we are building a fork of sorts
+    curl \
+        --location \
+        --output $MONO_ARCHIVE_NAME \
+        $(get_cache_url 51120976)
+
+    if [[ "$?" == "0" ]] && pkg_looks_ok ; then
+        echo "Got $MONO_ARCHIVE_NAME from original project cache" | tee -a "$MONO_BUILD_LOG"
+        return 0
+    fi
+
+    rm -f "$MONO_ARCHIVE_NAME" # just in case something was downloaded
+    echo "Will need to build mono $MONO_ARCHIVE_NAME (be patient this will take quite some time) ..." | tee -a "$MONO_BUILD_LOG"
 
     build_mono
-    if [[ ! -f $MONO_ARCHIVE_NAME ]] ; then
+    if ! pkg_looks_ok ; then
         die "Build failed?!"
     fi
 
-    echo "Build done, will upload result ..."
+    echo "Build done, will upload/cache result ..."
     curl \
         --location \
         --header "JOB-TOKEN: ${CI_JOB_TOKEN}" \
         --upload-file $MONO_ARCHIVE_NAME \
-        "$pkg_url" || die "Upload failed"
+        $(get_cache_url $CI_PROJECT_ID) || die "Upload failed"
 }
 
 
