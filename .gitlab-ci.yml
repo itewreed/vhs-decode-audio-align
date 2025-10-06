@@ -20,10 +20,25 @@ app:
       junit:
       - ./**/*-results.junit.xml
 
-appimage:
+appimage_amd64:
+  tags: [ saas-linux-small-amd64 ]
   image: ubuntu:24.04
   stage: build_appimage
   timeout: 2h
+  dependencies:
+    - app
+  script:
+    - /bin/bash ci-build-appimage.sh
+  artifacts:
+    paths: 
+     - ./mono-build.log
+     - ./*.AppImage
+
+appimage_arm64:
+  tags: [ saas-linux-small-arm64 ]
+  image: ubuntu:24.04
+  stage: build_appimage
+  timeout: 3h
   dependencies:
     - app
   script:
