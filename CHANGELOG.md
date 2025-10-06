@@ -7,9 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.2] - 2025-10-06
+
 ### Added
 
 - Fallback to original project cache for mono-builds to speed up CI/CD in forks of this project
+- Add Linux AArch64 AppImage build
 
 ### Fixed
 
@@ -45,7 +48,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Nearest neighbor interpolation of an input to an output stream 
 - CSV creation from TBC JSON to view drift and compensation over a tape
 
-[unreleased]: https://gitlab.com/wolfre/vhs-decode-auto-audio-align/-/compare/v1.0.1...main
+[unreleased]: https://gitlab.com/wolfre/vhs-decode-auto-audio-align/-/compare/v1.0.2...main
+[1.0.2]: https://gitlab.com/wolfre/vhs-decode-auto-audio-align/-/compare/v1.0.1...v1.0.2
 [1.0.1]: https://gitlab.com/wolfre/vhs-decode-auto-audio-align/-/compare/v1.0.0...v1.0.1
 [1.0.0]: https://gitlab.com/wolfre/vhs-decode-auto-audio-align/-/compare/v0.1.0...v1.0.0
 [0.1.0]: https://gitlab.com/wolfre/vhs-decode-auto-audio-align/-/tree/v0.1.0
