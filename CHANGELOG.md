@@ -7,9 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Fallback to original project cache for mono-builds to speed up CI/CD in forks of this project
+
 ### Fixed
 
 - Fix input/output file confusion (thanks to @davidvankemenade for reporting!)
+- Fix PAL-M detection (thanks to @andre-antunesdesa for the fix!)
+- 3-Clause BSD license now aligned with https://opensource.org/license/bsd-3-clause
 
 ## [1.0.1] - 2025-09-22
 

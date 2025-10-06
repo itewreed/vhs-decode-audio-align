@@ -7,6 +7,7 @@ stages:
 app:
   image: mono:6
   stage: build_test_pack_app
+  timeout: 15m
   script:
     - /bin/bash ci-install-packages.sh
     - /bin/bash ci-build.sh
@@ -22,6 +23,7 @@ app:
 appimage:
   image: ubuntu:24.04
   stage: build_appimage
+  timeout: 2h
   dependencies:
     - app
   script:
