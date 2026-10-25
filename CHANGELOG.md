@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Native Python port of `stream-align` (`python/`, `vhs-decode-aaa`): reads WAV/FLAC directly, detects sample rate, channels and bit depth, writes WAV/FLAC, no mono or sox needed
+- Sync log of `vhs-decode-aaa stream-align`: lists skipped/repeated fields with field index, timecode, video and capture time and the resulting audio jump
 - Python port of `gen-drift-csv` (`vhs-decode-aaa gen-drift-csv`), locale independent number format
 
 ## [1.0.2] - 2025-10-06

@@ -21,6 +21,8 @@ from decimal import ROUND_HALF_UP, Decimal
 import numpy as np
 import soundfile as sf
 
+from .sync_log import write_sync_log
+
 FIELD_RATE_PAL = (50, 1)
 FIELD_RATE_NTSC = (60000, 1001)
 
@@ -75,8 +77,16 @@ def field_rate_from_system(system):
     raise ValueError("Unsupported video system '%s'" % system)
 
 
+@dataclass
+class TbcInfo:
+    system: str
+    field_rate: tuple
+    field_locs: list
+    seq_nos: list
+
+
 def read_tbc_json(path):
-    """Returns (field_rate, field file locations) from a .tbc.json."""
+    """Reads system, field rate, field file locations and sequence numbers from a .tbc.json."""
     with open(path, "rb") as f:
         doc = json.load(f)
 
@@ -88,6 +98,7 @@ def read_tbc_json(path):
     # ld-decode-tools may write fileLoc as signed 32 bit, undo the rollover
     # (see https://gitlab.com/wolfre/vhs-decode-auto-audio-align/-/issues/13)
     locs = []
+    seq_nos = []
     correction = 0
     last = None
     for field in doc.get("fields") or []:
@@ -97,14 +108,16 @@ def read_tbc_json(path):
             log("Fixing signed 32 bit rollover in field %s" % field.get("seqNo"))
         last = loc
         locs.append(loc + correction)
+        seq_nos.append(field.get("seqNo"))
 
     if not locs:
         raise ValueError("The TBC json contains no fields")
-    return field_rate, locs
+    return TbcInfo(params.get("system"), field_rate, locs, seq_nos)
 
 
 @dataclass
 class Section:
+    first_index: int  # index of the first field in the tbc (= decoded video)
     first_field: int
     field_count: int
     speed_nom: int
@@ -138,6 +151,7 @@ def build_projection(field_locs, field_rate, rf_rate_hz, audio_rate_hz):
 
     result = []
     next_output_start = 0
+    first_index = 0
     for offsets in sections:
         output_start = next_output_start
         next_output_start += ideal_field_offset(len(offsets))
@@ -147,6 +161,7 @@ def build_projection(field_locs, field_rate, rf_rate_hz, audio_rate_hz):
             nom, den = limit_precision_21bit(offsets[-1] - offsets[0],
                                              ideal_field_offset(len(offsets) - 1))
         section = Section(
+            first_index=first_index,
             first_field=offsets[0],
             field_count=len(offsets),
             speed_nom=nom,
@@ -157,6 +172,7 @@ def build_projection(field_locs, field_rate, rf_rate_hz, audio_rate_hz):
         log("Section @%d -> %d with %d fields, %d/%d factor=%.9f" % (
             section.first_field, output_start, section.field_count, nom, den, nom / den))
         result.append(section)
+        first_index += len(offsets)
     return result
 
 
@@ -223,8 +239,8 @@ def default_output_path(json_path):
 
 
 def align(args):
-    field_rate, field_locs = read_tbc_json(args.json)
-    log("Loaded %d fields from '%s'" % (len(field_locs), args.json))
+    tbc = read_tbc_json(args.json)
+    log("Loaded %d fields from '%s'" % (len(tbc.field_locs), args.json))
 
     with sf.SoundFile(args.input) as src:
         rate, in_channels, n_in = src.samplerate, src.channels, src.frames
@@ -235,11 +251,14 @@ def align(args):
 
         chans = parse_channels(args.channels, in_channels)
         out_channels = len(chans) if chans else in_channels
-        sections = build_projection(field_locs, field_rate, args.rf_video_sample_rate_hz, rate)
+        sections = build_projection(tbc.field_locs, tbc.field_rate, args.rf_video_sample_rate_hz, rate)
 
         output = args.output or default_output_path(args.json)
         if os.path.exists(output) and not args.overwrite:
             raise FileExistsError("Output file '%s' exists, use --overwrite" % output)
+        sync_log = None if args.no_log else (args.log or os.path.splitext(output)[0] + ".sync.log")
+        if sync_log and os.path.exists(sync_log) and not args.overwrite:
+            raise FileExistsError("Log file '%s' exists, use --overwrite" % sync_log)
         fmt, subtype = choose_output_format(output, src.subtype, args.bits, out_channels, n_in)
         log("Output '%s': %s/%s, %d channels" % (output, fmt, subtype, out_channels))
 
@@ -282,6 +301,13 @@ def align(args):
     log("Done: %d output samples (%.3f s) from %d input samples (%.3f s)" % (
         written, written / rate, n_in, n_in / rate))
 
+    if sync_log:
+        events, skipped, total_ms = write_sync_log(
+            sync_log, tbc, sections, args.json, args.input, output,
+            rate, args.rf_video_sample_rate_hz, n_in, written)
+        log("Sync log '%s': %d re-syncs, %d field(s) skipped, net audio jump %+.1f ms" % (
+            sync_log, events, skipped, total_ms))
+
 
 def format_fixed(value, digits):
     """Like .NET double.ToString("F<digits>"): 15 significant digits, halves away from zero, no -0."""
@@ -291,7 +317,8 @@ def format_fixed(value, digits):
 
 def gen_drift_csv(args):
     """Port of gen-drift-csv: field drift and projection error over video time."""
-    field_rate, field_locs = read_tbc_json(args.json)
+    tbc = read_tbc_json(args.json)
+    field_rate, field_locs = tbc.field_rate, tbc.field_locs
     log("Loaded %d fields from '%s'" % (len(field_locs), args.json))
     rf_rate = args.rf_video_sample_rate_hz
     rate_nom, rate_den = field_rate
@@ -358,7 +385,10 @@ def main(argv=None):
                                           "default: <json name without .tbc.json>_al.wav")
     a.add_argument("-b", "--bits", choices=sorted(_BITS_TO_SUBTYPE), help="output sample format, default: same as input")
     a.add_argument("-c", "--channels", help="only write these input channels, 1-based, e.g. 1,2 to drop the head switch channel")
-    a.add_argument("--overwrite", action="store_true", help="overwrite an existing output file")
+    a.add_argument("--log", help="sync log listing every skipped field and audio re-sync, "
+                                 "default: <output without extension>.sync.log")
+    a.add_argument("--no-log", action="store_true", help="do not write the sync log")
+    a.add_argument("--overwrite", action="store_true", help="overwrite existing output and log files")
     a.set_defaults(func=align)
 
     d = sub.add_parser("gen-drift-csv", help="write a CSV with the drift of the video fields in the RF capture",
