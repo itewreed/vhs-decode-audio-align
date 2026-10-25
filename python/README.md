@@ -1,6 +1,6 @@
 # vhs-decode-aaa (native Python port)
 
-A native Linux port of the `stream-align` action, no mono / .NET needed.
+A native Linux port of the `stream-align` and `gen-drift-csv` actions, no mono / .NET needed.
 It reads WAV, FLAC (and everything else libsndfile reads) directly, takes
 sample rate, channel count and bit depth from the file header and writes the
 aligned audio as WAV/FLAC/W64/RF64.
@@ -30,3 +30,13 @@ vhs-decode-aaa --json video.tbc.json -i linear-audio-46875sps-3ch-24bit-le.wav -
 Without `-o` the output is written next to the json as `<name>_al.wav`.
 WAV output that would exceed 4 GiB is written as RF64 automatically.
 Use `--rf-video-sample-rate-hz` if the RF video was not captured at 40 MSps.
+`stream-align` is the default command and may be left out.
+
+## Drift CSV
+
+```bash
+vhs-decode-aaa gen-drift-csv --json video.tbc.json --csv-output my-tape.csv
+```
+
+Writes the same columns as the C# version. Numbers always use `.` as decimal
+separator, independent of the system locale.
