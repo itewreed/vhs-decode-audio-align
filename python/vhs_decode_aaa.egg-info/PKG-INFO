@@ -1,0 +1,8 @@
+Metadata-Version: 2.4
+Name: vhs-decode-aaa
+Version: 1.1.0
+Summary: Align HiFi/linear audio captures to vhs-decode video fields (native port of VhsDecodeAutoAudioAlign)
+License: BSD-3-Clause
+Requires-Python: >=3.8
+Requires-Dist: numpy
+Requires-Dist: soundfile

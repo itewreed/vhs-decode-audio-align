@@ -1,0 +1,2 @@
+[console_scripts]
+vhs-decode-aaa = vhs_decode_aaa.align:main

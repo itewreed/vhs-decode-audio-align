@@ -6,6 +6,13 @@ The app is written in C#/.NET, targeting Framework 4.7.2 and will work on Window
 On linux / mac the amazing [mono project](https://www.mono-project.com) can be used to run.
 The release [releases][releases] section also provides [Linux AppImage][appimage] builds that have the mono runtime included.
 
+A native Linux port of the `stream-align` action written in Python, which reads WAV/FLAC directly
+and needs neither mono nor sox, lives in [python/](python/README.md):
+
+```bash
+vhs-decode-aaa --json video.tbc.json -i audio.flac -o audio_al.wav
+```
+
 ## Example for linear audio alignment
 
 ```bash

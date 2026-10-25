@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vhs-decode-aaa"
+version = "1.1.0"
+description = "Align HiFi/linear audio captures to vhs-decode video fields (native port of VhsDecodeAutoAudioAlign)"
+license = { text = "BSD-3-Clause" }
+requires-python = ">=3.8"
+dependencies = ["numpy", "soundfile"]
+
+[project.scripts]
+vhs-decode-aaa = "vhs_decode_aaa.align:main"
+
+[tool.setuptools]
+packages = ["vhs_decode_aaa"]
